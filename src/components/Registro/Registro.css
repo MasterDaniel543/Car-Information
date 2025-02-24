@@ -1,0 +1,205 @@
+.login-container {
+    font-family: 'Roboto', sans-serif;
+    background-color: #1f2029;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #ffffff;
+}
+
+.login-container .form-toggle-labels {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.login-container .form-toggle-labels span {
+    margin: 0 15px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.login-container .form-toggle-labels span.active {
+    color: #64b5f6;
+}
+
+.login-container .form-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.login-container .switch {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 34px;
+}
+
+.login-container .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.login-container .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.login-container .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.login-container input:checked + .slider {
+    background-color: #007bff;
+}
+
+.login-container input:focus + .slider {
+    box-shadow: 0 0 1px #007bff;
+}
+
+.login-container input:checked + .slider:before {
+    transform: translateX(46px);
+}
+
+.login-container .container {
+    background-image: url('./japon.png');
+    background-position: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgb(255, 255, 255);
+    padding: 40px;
+    width: 380px;
+}
+
+.login-container .form-card {
+    text-align: center;
+}
+
+.login-container .form-card h2 {
+    margin-bottom: 30px;
+    color: #ffeba7;
+    font-size: 1.8em;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.login-container .form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.login-container .form-group input {
+    width: calc(100% - 32px);
+    padding: 12px 12px 12px 32px;
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.774); /* Mantenemos el fondo negro transparente */
+    color: #000000;
+    font-size: 1em;
+    font-weight: 400;
+}
+
+.login-container .form-group input:focus {
+    border-color: #0004ff;
+    outline: none;
+}
+
+.login-container .form-group input::placeholder {
+    color: #000000;
+}
+
+.login-container .form-group .input-circle {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-color: #000;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.login-container .form-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #ffeba7;
+    color: #1f2029;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.login-container .form-button:hover {
+    background-color: #7a0707;
+    color: #fff;
+}
+
+.login-container .form-card p {
+    margin-top: 25px;
+    font-size: 0.95em;
+    color: #ffffff;
+    font-weight: 400;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.captcha {
+    margin: 15px 0;
+}
+
+.captcha label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.captcha input {
+    width: calc(100% - 32px);
+    padding: 12px 12px 12px 32px;
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.774);
+    color: #000000;
+    font-size: 1em;
+}
+
+.captcha input:focus {
+    border-color: #0004ff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.form-group.captcha label {
+    color: #ffeba7;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}

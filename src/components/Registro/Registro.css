@@ -171,43 +171,13 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.captcha {
-    margin: 15px 0;
-}
+/* ... existing code ... */
 
-.captcha label {
-    display: block;
-    margin-bottom: 8px;
-    color: #ffffff;
-    font-size: 14px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.captcha input {
-    width: calc(100% - 32px);
-    padding: 12px 12px 12px 32px;
-    border: 1px solid #ffffff;
-    border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.774);
-    color: #000000;
-    font-size: 1em;
-}
-
-.captcha input:focus {
-    border-color: #0004ff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-}
-
-.form-group.captcha label {
-    color: #ffeba7;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.form-group.captcha {
+.recaptcha-container {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    margin: 15px 0;
+    width: 100%;
 }
 
 .g-recaptcha {
@@ -215,23 +185,68 @@
     -webkit-transform-origin: center;
 }
 
-.form-group.captcha {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-    overflow: hidden;
-    max-width: 100%;
-}
-
+/* Responsive Design */
 @media screen and (max-width: 480px) {
-    .form-group.captcha {
-        transform: scale(0.85);
-        transform-origin: center;
-        margin: 10px 0;
-    }
-    
-    .container {
+    .login-container .container {
         width: 90%;
         padding: 20px;
+        margin: 10px;
     }
+
+    .login-container .form-card h2 {
+        font-size: 1.5em;
+    }
+
+    .login-container .form-group input {
+        font-size: 0.9em;
+    }
+
+    .login-container .form-button {
+        font-size: 1em;
+        padding: 12px;
+    }
+
+    .recaptcha-container {
+        transform: scale(0.85);
+        -webkit-transform: scale(0.85);
+        margin: 10px 0;
+    }
+
+    .login-container .form-toggle-labels span {
+        font-size: 1em;
+        margin: 0 10px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .login-container .container {
+        width: 85%;
+        padding: 15px;
+    }
+
+    .recaptcha-container {
+        transform: scale(0.75);
+        -webkit-transform: scale(0.75);
+    }
+
+    .login-container .form-card h2 {
+        font-size: 1.3em;
+    }
+}
+
+/* Error and Success Messages */
+.error-message {
+    color: #ff4444;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgba(255, 68, 68, 0.1);
+}
+
+.success-message {
+    color: #00C851;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgba(0, 200, 81, 0.1);
 }

@@ -14,28 +14,15 @@ function LoginForm() {
 
     useEffect(() => {
         const loadRecaptchaScript = () => {
-            // Remover cualquier script previo de reCAPTCHA
             const existingScript = document.querySelector('script[src*="recaptcha"]');
             if (existingScript) {
                 existingScript.remove();
             }
 
             const script = document.createElement('script');
-            script.src = `https://www.google.com/recaptcha/api.js?render=6LdFleIqAAAAKOxdoNg4xZbjqaKABHikkuMZUkS`;
+            script.src = 'https://www.google.com/recaptcha/api.js';
             script.async = true;
             script.defer = true;
-
-            // Mejorar manejo de carga para móviles
-            script.onload = () => {
-                window.grecaptcha.ready(() => {
-                    console.log('reCAPTCHA listo para usar');
-                });
-            };
-
-            script.onerror = (error) => {
-                console.error('Error al cargar reCAPTCHA:', error);
-            };
-
             document.head.appendChild(script);
 
             return () => {
@@ -55,24 +42,8 @@ function LoginForm() {
         setSuccessMessage('');
         setUsuario('');
         setContraseña('');
-    };
-
-    const executeRecaptcha = async () => {
-        try {
-            await new Promise((resolve) => {
-                if (window.grecaptcha) {
-                    resolve();
-                } else {
-                    window.onloadCallback = resolve;
-                }
-            });
-
-            return await window.grecaptcha.execute('6LdFleIqAAAAAKOxdoNg4xZbjqaKABHikkuMZUkS', { 
-                action: 'submit' 
-            });
-        } catch (error) {
-            console.error('reCAPTCHA error:', error);
-            throw new Error('Error al verificar reCAPTCHA');
+        if (window.grecaptcha) {
+            window.grecaptcha.reset();
         }
     };
 
@@ -83,14 +54,17 @@ function LoginForm() {
         setLoading(true);
 
         try {
-            const token = await executeRecaptcha();
+            const captchaToken = window.grecaptcha.getResponse();
+            if (!captchaToken) {
+                throw new Error('Por favor, complete el captcha');
+            }
 
             let response;
             if (showLogin) {
                 response = await axios.post('http://localhost:3001/login', {
                     usuario,
                     contraseña,
-                    captchaToken: token
+                    captchaToken
                 });
                 setSuccessMessage('Inicio de sesión exitoso');
                 localStorage.setItem('token', response.data.token);
@@ -99,7 +73,7 @@ function LoginForm() {
                 response = await axios.post('http://localhost:3001/registro', {
                     usuario,
                     contraseña,
-                    captchaToken: token
+                    captchaToken
                 });
                 setSuccessMessage('Registro exitoso');
                 setTimeout(() => {
@@ -116,6 +90,7 @@ function LoginForm() {
             }
         } finally {
             setLoading(false);
+            window.grecaptcha.reset();
         }
     };
 
@@ -171,6 +146,12 @@ function LoginForm() {
                                 disabled={loading}
                                 required
                             />
+                        </div>
+                        <div className="recaptcha-container">
+                            <div 
+                                className="g-recaptcha" 
+                                data-sitekey="6LfyiuIqAAAAAIB6G8R_2OS6gOn55WJJv2byzNs3"
+                            ></div>
                         </div>
                         <button 
                             type="submit" 

@@ -14,21 +14,38 @@ function LoginForm() {
 
     useEffect(() => {
         const loadRecaptchaScript = () => {
+            // Remover cualquier script previo de reCAPTCHA
+            const existingScript = document.querySelector('script[src*="recaptcha"]');
+            if (existingScript) {
+                existingScript.remove();
+            }
+
             const script = document.createElement('script');
-            script.src = 'https://www.google.com/recaptcha/api.js?render=6LdFleIqAAAAAKOxdoNg4xZbjqaKABHikkuMZUkS';
+            script.src = `https://www.google.com/recaptcha/api.js?render=6LdFleIqAAAAKOxdoNg4xZbjqaKABHikkuMZUkS`;
             script.async = true;
+            script.defer = true;
+
+            // Mejorar manejo de carga para móviles
             script.onload = () => {
-                console.log('reCAPTCHA script loaded');
+                window.grecaptcha.ready(() => {
+                    console.log('reCAPTCHA listo para usar');
+                });
             };
-            script.onerror = () => {
-                console.error('Error loading reCAPTCHA script');
+
+            script.onerror = (error) => {
+                console.error('Error al cargar reCAPTCHA:', error);
             };
-            document.body.appendChild(script);
+
+            document.head.appendChild(script);
 
             return () => {
-                document.body.removeChild(script);
+                const scriptToRemove = document.querySelector('script[src*="recaptcha"]');
+                if (scriptToRemove) {
+                    scriptToRemove.remove();
+                }
             };
         };
+
         loadRecaptchaScript();
     }, []);
 

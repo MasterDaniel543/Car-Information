@@ -2,11 +2,21 @@ import React from 'react';
 import './Footer.css';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="footer">
       <div className="footer-content">
-        <p>© 2024 Car Information. Todos los derechos reservados.</p>
+        <p>© {currentYear}-{currentYear + 2} Car Information. Todos los derechos reservados.</p>
         <p>Creado por <span className="creator">El Daniel</span></p>
+        <p>GitHub: <a 
+          href="https://github.com/MasterDaniel543" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="creator"
+        >
+          MaterDaniel
+        </a></p>
       </div>
     </footer>
   );

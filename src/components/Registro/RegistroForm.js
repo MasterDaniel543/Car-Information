@@ -1,29 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import ReCAPTCHA from "react-google-recaptcha";
 import './Registro.css';
 
 function LoginForm() {
     const [showLogin, setShowLogin] = useState(true);
     const [usuario, setUsuario] = useState('');
     const [contraseña, setContraseña] = useState('');
-    const [captchaToken, setCaptchaToken] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const recaptchaRef = React.createRef();
+
+    useEffect(() => {
+        const loadRecaptchaScript = () => {
+            const script = document.createElement('script');
+            script.src = 'https://www.google.com/recaptcha/api.js?render=6LdFleIqAAAAAKOxdoNg4xZbjqaKABHikkuMZUkS';
+            script.async = true;
+            script.onload = () => {
+                console.log('reCAPTCHA script loaded');
+            };
+            script.onerror = () => {
+                console.error('Error loading reCAPTCHA script');
+            };
+            document.body.appendChild(script);
+
+            return () => {
+                document.body.removeChild(script);
+            };
+        };
+        loadRecaptchaScript();
+    }, []);
 
     const toggleForm = () => {
         setShowLogin(!showLogin);
         setError('');
         setSuccessMessage('');
-        setCaptchaToken('');
         setUsuario('');
         setContraseña('');
-        if (recaptchaRef.current) {
-            recaptchaRef.current.reset();
+    };
+
+    const executeRecaptcha = async () => {
+        try {
+            await new Promise((resolve) => {
+                if (window.grecaptcha) {
+                    resolve();
+                } else {
+                    window.onloadCallback = resolve;
+                }
+            });
+
+            return await window.grecaptcha.execute('6LdFleIqAAAAAKOxdoNg4xZbjqaKABHikkuMZUkS', { 
+                action: 'submit' 
+            });
+        } catch (error) {
+            console.error('reCAPTCHA error:', error);
+            throw new Error('Error al verificar reCAPTCHA');
         }
     };
 
@@ -33,19 +65,15 @@ function LoginForm() {
         setSuccessMessage('');
         setLoading(true);
 
-        if (!captchaToken) {
-            setError('Por favor, completa el captcha');
-            setLoading(false);
-            return;
-        }
-
         try {
+            const token = await executeRecaptcha();
+
             let response;
             if (showLogin) {
                 response = await axios.post('http://localhost:3001/login', {
                     usuario,
                     contraseña,
-                    captchaToken
+                    captchaToken: token
                 });
                 setSuccessMessage('Inicio de sesión exitoso');
                 localStorage.setItem('token', response.data.token);
@@ -54,37 +82,24 @@ function LoginForm() {
                 response = await axios.post('http://localhost:3001/registro', {
                     usuario,
                     contraseña,
-                    captchaToken
+                    captchaToken: token
                 });
                 setSuccessMessage('Registro exitoso');
                 setTimeout(() => {
                     setShowLogin(true);
                     setUsuario('');
                     setContraseña('');
-                    setCaptchaToken('');
-                    if (recaptchaRef.current) {
-                        recaptchaRef.current.reset();
-                    }
                 }, 2000);
             }
         } catch (err) {
             if (err.response) {
                 setError(err.response.data.message || 'Error en el servidor');
             } else {
-                setError('Error de conexión');
+                setError(err.message || 'Error de conexión');
             }
-            if (recaptchaRef.current) {
-                recaptchaRef.current.reset();
-            }
-            setCaptchaToken('');
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleCaptchaChange = (token) => {
-        setCaptchaToken(token);
-        setError('');
     };
 
     return (
@@ -139,16 +154,6 @@ function LoginForm() {
                                 disabled={loading}
                                 required
                             />
-                        </div>
-                        <div className="form-group captcha">
-                        <ReCAPTCHA
-                            ref={recaptchaRef}
-                            sitekey="6LfyiuIqAAAAAIB6G8R_2OS6gOn55WJJv2byzNs3"
-                            onChange={handleCaptchaChange}
-                            size="normal"
-                            theme="dark"
-                            mobile={true}
-                        />
                         </div>
                         <button 
                             type="submit" 

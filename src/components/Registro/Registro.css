@@ -214,3 +214,24 @@
     transform-origin: center;
     -webkit-transform-origin: center;
 }
+
+.form-group.captcha {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+@media screen and (max-width: 480px) {
+    .form-group.captcha {
+        transform: scale(0.85);
+        transform-origin: center;
+        margin: 10px 0;
+    }
+    
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+}

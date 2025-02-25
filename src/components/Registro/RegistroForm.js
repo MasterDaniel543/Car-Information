@@ -141,11 +141,14 @@ function LoginForm() {
                             />
                         </div>
                         <div className="form-group captcha">
-                            <ReCAPTCHA
-                                ref={recaptchaRef}
-                                sitekey="6LfyiuIqAAAAAIB6G8R_2OS6gOn55WJJv2byzNs3"
-                                onChange={handleCaptchaChange}
-                            />
+                        <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey="6LfyiuIqAAAAAIB6G8R_2OS6gOn55WJJv2byzNs3"
+                            onChange={handleCaptchaChange}
+                            size="normal"
+                            theme="dark"
+                            mobile={true}
+                        />
                         </div>
                         <button 
                             type="submit" 

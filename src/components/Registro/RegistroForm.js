@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Registro.css';
@@ -12,39 +12,12 @@ function LoginForm() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const loadRecaptchaScript = () => {
-            const existingScript = document.querySelector('script[src*="recaptcha"]');
-            if (existingScript) {
-                existingScript.remove();
-            }
-
-            const script = document.createElement('script');
-            script.src = 'https://www.google.com/recaptcha/api.js';
-            script.async = true;
-            script.defer = true;
-            document.head.appendChild(script);
-
-            return () => {
-                const scriptToRemove = document.querySelector('script[src*="recaptcha"]');
-                if (scriptToRemove) {
-                    scriptToRemove.remove();
-                }
-            };
-        };
-
-        loadRecaptchaScript();
-    }, []);
-
     const toggleForm = () => {
         setShowLogin(!showLogin);
         setError('');
         setSuccessMessage('');
         setUsuario('');
         setContraseña('');
-        if (window.grecaptcha) {
-            window.grecaptcha.reset();
-        }
     };
 
     const handleSubmit = async (e) => {
@@ -54,17 +27,11 @@ function LoginForm() {
         setLoading(true);
 
         try {
-            const captchaToken = window.grecaptcha.getResponse();
-            if (!captchaToken) {
-                throw new Error('Por favor, complete el captcha');
-            }
-
             let response;
             if (showLogin) {
                 response = await axios.post('http://localhost:3001/login', {
                     usuario,
-                    contraseña,
-                    captchaToken
+                    contraseña
                 });
                 setSuccessMessage('Inicio de sesión exitoso');
                 localStorage.setItem('token', response.data.token);
@@ -72,8 +39,7 @@ function LoginForm() {
             } else {
                 response = await axios.post('http://localhost:3001/registro', {
                     usuario,
-                    contraseña,
-                    captchaToken
+                    contraseña
                 });
                 setSuccessMessage('Registro exitoso');
                 setTimeout(() => {
@@ -90,7 +56,6 @@ function LoginForm() {
             }
         } finally {
             setLoading(false);
-            window.grecaptcha.reset();
         }
     };
 
@@ -146,12 +111,6 @@ function LoginForm() {
                                 disabled={loading}
                                 required
                             />
-                        </div>
-                        <div className="recaptcha-container">
-                            <div 
-                                className="g-recaptcha" 
-                                data-sitekey="6LfyiuIqAAAAAIB6G8R_2OS6gOn55WJJv2byzNs3"
-                            ></div>
                         </div>
                         <button 
                             type="submit" 

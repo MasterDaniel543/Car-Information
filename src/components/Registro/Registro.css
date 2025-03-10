@@ -250,3 +250,12 @@
     border-radius: 4px;
     background-color: rgba(0, 200, 81, 0.1);
 }
+.form-card form {
+    transition: all 0.3s ease;
+}
+
+.form-group input[type="text"][maxLength="6"] {
+    letter-spacing: 3px;
+    font-size: 1.3em;
+    text-align: center;
+}

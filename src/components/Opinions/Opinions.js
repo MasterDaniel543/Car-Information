@@ -59,12 +59,37 @@ function Opinions() {
         }));
     };
 
+    const encryptImage = async (file) => {
+        const reader = new FileReader();
+        return new Promise((resolve) => {
+            reader.onload = async (e) => {
+                const arrayBuffer = e.target.result;
+                const key = await window.crypto.subtle.generateKey(
+                    { name: 'AES-GCM', length: 256 },
+                    true,
+                    ['encrypt']
+                );
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                const encrypted = await window.crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv },
+                    key,
+                    arrayBuffer
+                );
+                
+                const encryptedFile = new Blob([iv, encrypted]);
+                const keyExported = await window.crypto.subtle.exportKey('raw', key);
+                resolve({ file: encryptedFile, key: keyExported, iv });
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
         
         if (!token) {
-            navigate('/login');
+            navigate('/registro');
             return;
         }
 
@@ -73,25 +98,44 @@ function Opinions() {
         try {
             const formData = new FormData();
             formData.append('opinion', newOpinion);
-            formData.append('token', token);
+            
             if (image) {
+                // Verificar el tipo de archivo
+                if (!['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(image.type)) {
+                    alert('Solo se permiten archivos JPG, JPEG, PNG y GIF');
+                    setLoading(false);
+                    return;
+                }
+                
+                // Verificar el tamaño del archivo (5MB máximo)
+                if (image.size > 5 * 1024 * 1024) {
+                    alert('El archivo es demasiado grande. El tamaño máximo es 5MB');
+                    setLoading(false);
+                    return;
+                }
+
                 formData.append('image', image);
             }
 
-            await axios.post('http://localhost:3001/api/opinions', formData, {
+            const response = await axios.post('http://localhost:3001/api/opinions', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
                 },
             });
 
-            clearForm();
-            fetchOpinions();
+            if (response.data) {
+                clearForm();
+                fetchOpinions();
+            }
         } catch (error) {
             console.error('Error submitting opinion:', error);
             if (error.response && error.response.status === 401) {
                 localStorage.removeItem('token');
                 setCurrentUser('');
                 navigate('/login');
+            } else {
+                alert('Error al publicar la opinión. Por favor, intente nuevamente.');
             }
         } finally {
             setLoading(false);
